@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Wedding</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4c2c2; /* Light pink background color */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background for the container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            width: 90%;
+            max-width: 500px;
+            z-index: 1;
+        }
+
+        .container img {
+            width: 100%;
+            max-width: 400px; /* Adjust as needed */
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        button {
+            background-color: #e63946;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: #f1faee;
+            color: #e63946;
+        }
+
+        .destination-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .destination {
+            background-color: #e63946;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .destination:hover {
+            background-color: #f1faee;
+            color: #e63946;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 2;
+            display: none; /* Hide video by default */
+            justify-content: center;
+            align-items: center;
+        }
+
+        #video.show {
+            display: flex; /* Show video when 'show' class is added */
+        }
+
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .final-message {
+            font-size: 1.5em;
+            color: #e63946; /* Red color for final message */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Wedding Page -->
+    <div id="weddingPage" class="container">
+        <img src="image-wedding.jpg" alt="Wedding Image"> <!-- Local image for wedding -->
+        <h1>💍 We Are Married Now! 💍</h1>
+        <p>Now that we are hubby and wifey, all lovey and dovey 🫣💕. Wanna go on a honeymoon, sweetheart 👀?</p>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+        <div id="noOptionMessage" class="message">
+            <span class="angry-cat">😾</span> I told you, no is not an option!
+        </div>
+    </div>
+
+    <!-- Honeymoon Selection -->
+    <div id="honeymoonPage" class="container hidden">
+        <img src="image-honeymoon.jpg" alt="Honeymoon Image"> <!-- Local image for honeymoon selection -->
+        <h1>Where should we go then, love?</h1>
+        <div class="destination-options">
+            <button class="destination" data-destination="Japan">Japan</button>
+            <button class="destination" data-destination="Switzerland">Switzerland</button>
+            <button class="destination" data-destination="Bali">Bali</button>
+        </div>
+    </div>
+
+    <!-- Confirmation Page -->
+    <div id="confirmationPage" class="container hidden">
+        <img src="image-confirmation.jpg" alt="Confirmation Image"> <!-- Local image for confirmation -->
+        <p class="final-message" id="finalMessage" style="display: none;">
+            Let's live our life together forever, darling. You are my salvation, my home ヾ(＠⌒ー⌒＠)ノ
+        </p>
+    </div>
+
+    <!-- Video -->
+    <div id="video">
+        <video id="videoPlayer" controls>
+            <source id="videoSource" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        const weddingPage = document.getElementById('weddingPage');
+        const honeymoonPage = document.getElementById('honeymoonPage');
+        const confirmationPage = document.getElementById('confirmationPage');
+        const videoElement = document.getElementById('video');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoSource = document.getElementById('videoSource');
+        const noOptionMessage = document.getElementById('noOptionMessage');
+        const finalMessage = document.getElementById('finalMessage');
+
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const destinationButtons = document.querySelectorAll('.destination');
+
+        const videos = {
+            Japan: 'videos/japan.mp4',       // Local path to Japan video
+            Switzerland: 'videos/switzerland.mp4', // Local path to Switzerland video
+            Bali: 'videos/bali.mp4'         // Local path to Bali video
+        };
+
+        // Function to hide all pages
+        function hideAllPages() {
+            weddingPage.classList.add('hidden');
+            honeymoonPage.classList.add('hidden');
+            confirmationPage.classList.add('hidden');
+        }
+
+        // Show the Honeymoon Selection Page
+        yesButton.addEventListener('click', () => {
+            hideAllPages();
+            honeymoonPage.classList.remove('hidden');
+        });
+
+        // Handle the 'No' Button Click
+        noButton.addEventListener('click', () => {
+            noOptionMessage.style.display = 'block'; // Show the message
+            setTimeout(() => {
+                noOptionMessage.style.display = 'none'; // Hide the message after 3 seconds
+            }, 3000);
+        });
+
+        // Show Video
+        function showVideo(destination) {
+            videoSource.src = videos[destination];
+            videoPlayer.load(); // Reload the video with the new source
+            videoElement.classList.add('show'); // Use the 'show' class to make the video visible
+            videoPlayer.requestFullscreen(); // Request fullscreen mode if needed
+            videoPlayer.play(); // Start playing the video
+        }
+
+        // Handle Destination Selection and Show Video
+        destinationButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const destination = event.target.dataset.destination;
+                showVideo(destination);
+
+                // Show message after video ends
+                videoPlayer.onended = () => {
+                    videoElement.classList.remove('show'); // Hide video after it ends
+                    hideAllPages(); // Hide all pages
+                    confirmationPage.classList.remove('hidden'); // Show the confirmation page
+                    finalMessage.style.display = 'block'; // Show the final message
+                };
+            });
+        });
+    </script>
+</body>
+</html>
